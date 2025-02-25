@@ -1,6 +1,7 @@
 package com.korit.boardback.controller;
 
 import com.korit.boardback.dto.request.ReqJoinDto;
+import com.korit.boardback.dto.request.ReqLoginDto;
 import com.korit.boardback.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,8 @@ public class AuthController {
 
     @Operation(summary = "로그인", description = "로그인 설명")
     @PostMapping("/login")
-    public ResponseEntity<?> login() {
+    public ResponseEntity<?> login(@RequestBody ReqLoginDto reqLoginDto) {
+        System.out.println(reqLoginDto);
         return ResponseEntity.ok().build();
     }
 

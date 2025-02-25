@@ -1,6 +1,7 @@
 package com.korit.boardback.service;
 
 import com.korit.boardback.dto.request.ReqJoinDto;
+import com.korit.boardback.dto.request.ReqLoginDto;
 import com.korit.boardback.entity.User;
 import com.korit.boardback.exception.DuplicatedValueException;
 import com.korit.boardback.exception.FieldError;
@@ -41,5 +42,8 @@ public class UserService {
                 .build();
         return userRepository.save(user);
     }
+
+    
+
 
 }

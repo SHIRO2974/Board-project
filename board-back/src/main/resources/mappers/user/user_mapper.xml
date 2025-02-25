@@ -19,7 +19,7 @@
         <result property="createdAt" column="created_at" />
     </resultMap>
 
-    <select id="selectByUsername">
+    <select id="selectByUsername" resultMap="userResultMap">
         select
             user_id,
             username,
