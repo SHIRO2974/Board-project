@@ -2,17 +2,23 @@
 import * as s from './style';
 import React, { useState } from 'react';
 import { SiGoogle, SiKakao, SiNaver } from "react-icons/si";
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ValidInput from '../../components/auth/ValidInput/ValidInput';
 import { useLoginMutation } from '../../mutations/authMutation';
+import Swal from 'sweetalert2';
+import { setTokenLocalStorage } from '../../configs/axiosConfig';
+import { useUserMeQuery } from '../../queries/userquery';
 
 function LoginPage(props) {
 
+    const navigete = useNavigate();
     const loginMutation = useLoginMutation();
+    const loginUser = useUserMeQuery();
+
     const [ searchParams, setSearchParams ] = useSearchParams();
     const [ inputValue, setInputValue] = useState({
 
-        username: searchParams.get("username"),
+        username: searchParams.get("username") || "",
         password: ""
     })
 
@@ -29,9 +35,28 @@ function LoginPage(props) {
         try {
             
             const response = await loginMutation.mutateAsync(inputValue)
-            console.log(response.data);
-            
+            const tokenName = response.data.name;
+            const accessToken = response.data.token;
+            setTokenLocalStorage(tokenName, accessToken);
+            await Swal.fire({
+                icon: "success",
+                text: "로그인 성공",
+                timer: 1000,
+                position:"center",
+                showCancelButton: false,
+            });
+            loginUser.refetch();
+            navigete("/");  // 로그인 성공 후 홈으로 이동
+
         } catch (error) {
+
+            //  sweetalert2 사용
+            await Swal.fire({
+                title: '로그인 실패!',
+                text: '사용자 정보를 다시 확인해주세요',
+                icon: 'error',
+                confirmButtonText: '확인',
+              })
             
         }
         
