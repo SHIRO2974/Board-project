@@ -48,7 +48,7 @@
             ut.account_locked,
             ut.credentials_expired,
             ut.account_enabled,
-            ut.created_at
+            ut.created_at,
 
             urt.user_role_id,
             urt.user_id as urt_user_id,
@@ -62,7 +62,7 @@
             left outer join user_role_tb urt on(urt.user_id = ut.user_id)
             left outer join role_tb rt on(rt.role_id = urt.role_id)
         where
-            ut.userid = #{userId}
+            ut.user_id = #{userId}
     </select>
 
     <select id="selectByUsername" resultMap="userResultMap">
@@ -79,11 +79,21 @@
             ut.account_locked,
             ut.credentials_expired,
             ut.account_enabled,
-            ut.created_at
+            ut.created_at,
+
+            urt.user_role_id,
+            urt.user_id as urt_user_id,
+            urt.role_id as urt_role_id,
+
+            rt.role_id,
+            rt.role_name,
+            rt.role_name_kor
         from
-            user_tb
+            user_tb ut
+            left outer join user_role_tb urt on(urt.user_id = ut.user_id)
+            left outer join role_tb rt on(rt.role_id = urt.role_id)
         where
-            username = #{username}
+            ut.username = #{username}
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="userId">
