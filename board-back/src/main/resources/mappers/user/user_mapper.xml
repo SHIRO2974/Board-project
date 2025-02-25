@@ -38,6 +38,9 @@
         where
             username = #{username}
     </select>
+    <select id="findByUsername" resultType="com.korit.boardback.entity.User">
+
+    </select>
     <insert id="insert" useGeneratedKeys="true" keyProperty="userId">
         insert into user_tb
         values (

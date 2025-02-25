@@ -5,11 +5,6 @@ spring:
       local: local_server, common, secret
       blue: blue_server, common, secret
 
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/study
-    username: root
-    password: 1q2w3e4r!
 ---
 
 spring:
