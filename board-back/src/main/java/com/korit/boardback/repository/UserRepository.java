@@ -12,6 +12,10 @@ public class UserRepository {
     @Autowired
     private UserMapper userMapper;
 
+    public Optional<User> findByUserId(int userId) {
+        return Optional.ofNullable(userMapper.selectByUserId(userId));
+    }
+
     public Optional<User> findByUsername(String username) {
         return Optional.ofNullable(userMapper.selectByUsername(username));
     }

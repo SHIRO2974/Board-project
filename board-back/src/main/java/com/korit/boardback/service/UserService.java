@@ -4,9 +4,11 @@ import com.korit.boardback.Jwt.JwtUtil;
 import com.korit.boardback.dto.request.ReqJoinDto;
 import com.korit.boardback.dto.request.ReqLoginDto;
 import com.korit.boardback.entity.User;
+import com.korit.boardback.entity.UserRole;
 import com.korit.boardback.exception.DuplicatedValueException;
 import com.korit.boardback.exception.FieldError;
 import com.korit.boardback.repository.UserRepository;
+import com.korit.boardback.repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,6 +21,9 @@ import java.util.List;
 
 @Service
 public class UserService {
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -51,7 +56,14 @@ public class UserService {
                 .credentialsExpired(1)
                 .accountEnabled(1)
                 .build();
-        return userRepository.save(user);
+
+        userRepository.save(user);
+        UserRole userRole = UserRole.builder()
+                .userId(user.getUserId())
+                .roleId(1)
+                .build();
+        userRoleRepository.save(userRole);
+        return user;
     }
     public String login(ReqLoginDto reqLoginDto) {
 
