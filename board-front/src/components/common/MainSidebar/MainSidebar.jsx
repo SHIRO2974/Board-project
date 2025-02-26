@@ -26,6 +26,11 @@ function MainSidebar(props) {
         navigate("/");
     }
 
+    const handleAccountOnClick = () => {
+
+        navigate("/account/setting");
+    }
+
     return (
         <div css={s.layout(isOpen)}>
             <div css={s.container}>
@@ -41,8 +46,14 @@ function MainSidebar(props) {
                                 </span>
                             </button>
                             :
-                            <button css={emptyButton} >
+                            <button css={emptyButton} onClick={handleAccountOnClick}>
                                 <span css={s.authText}>
+                                    <div css={s.profileImgBox}>
+                                        {
+                                            loginUser.isLoading ||
+                                        <img src={`http://localhost:8080/image/user/${loginUser?.data?.data.profileImg}`} alt="" />
+                                        }
+                                    </div>
                                     <LuLockKeyhole />{loginUser.data?.data?.nickname}
                                 </span>
                             </button>

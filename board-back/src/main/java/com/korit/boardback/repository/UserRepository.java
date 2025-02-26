@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public class UserRepository {
+
     @Autowired
     private UserMapper userMapper;
 
@@ -23,5 +24,15 @@ public class UserRepository {
     public User save(User user) {
         userMapper.insert(user);
         return user;
+    }
+
+    public void updateProfileImg(int userId, String profileImg) {
+
+        userMapper.updateProfileById(userId, profileImg);
+    }
+
+    public void updateNickname(int userId, String nickname) {
+
+        userMapper.updateNicknameById(userId, nickname);
     }
 }

@@ -33,7 +33,7 @@ public class SecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeHttpRequests(authorizeRequests -> {
-            authorizeRequests.requestMatchers("/api/auth/**").permitAll();  // 허용
+            authorizeRequests.requestMatchers("/api/auth/**", "/image/**").permitAll();  // 허용
            authorizeRequests.anyRequest().authenticated();  // 외의 모든 요청 인증필요
         });
 

@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -33,6 +34,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private FileService fileService;
 
     public boolean duplicatedByUsername(String username) {
         return userRepository.findByUsername(username).isPresent();
@@ -81,6 +85,22 @@ public class UserService {
 
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void updateProfileImg(User user, MultipartFile file) {
 
+        final String PROFILE_IMG_FILE_PATH = "/upload/user";
+
+        String savedFileName = fileService.saveFile(PROFILE_IMG_FILE_PATH, file);   // 파일저장
+        userRepository.updateProfileImg(user.getUserId(), savedFileName);   // db에 저장
+
+        if (user.getProfileImg() == null) {return;}
+        fileService.deleteFile(PROFILE_IMG_FILE_PATH + "/" + user.getProfileImg());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void updateNickname(User user, String nickname) {
+
+        userRepository.updateNickname(user.getUserId(), nickname);
+    }
 
 }

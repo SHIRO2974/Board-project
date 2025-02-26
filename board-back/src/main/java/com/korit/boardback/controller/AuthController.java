@@ -37,9 +37,4 @@ public class AuthController {
 
         return ResponseEntity.ok().body(respTokenDto);
     }
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
 }
