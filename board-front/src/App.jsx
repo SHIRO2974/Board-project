@@ -1,31 +1,24 @@
 import { Global } from "@emotion/react"
 import { global } from "./styles/global"
 import MainLayout from "./components/common/MainLayout/MainLayout"
-import MainContainer from "./components/common/MainContainer/MainContainer"
-import MainSidebar from "./components/common/MainSidebar/MainSidebar"
-import LoginPage from "./pages/LoginPage/LoginPage"
 import { Route, Routes } from "react-router-dom"
-import JoinPage from "./pages/JoinPage/JoinPage"
 import { useUserMeQuery } from "./queries/userquery"
-import AccountPage from "./pages/AccountPage/AccountPage"
+import AuthRoute from "./routes/AuthRoute/AuthRoute"
+import MainRoute from "./routes/MainRoute/MainRoute"
 
 function App() {
 
-	const loginUser = useUserMeQuery();
+	useUserMeQuery();	// 최초의 한번 캐싱 처리
 
 	return (
     	<>
 			<Global styles={global} />
-			<MainLayout>
-				<MainSidebar />
-				<MainContainer>
-					<Routes>
-						<Route path="/account/setting" element={<AccountPage />} />
-						<Route path="/auth/login" element={<LoginPage />} />
-						<Route path="/auth/join" element={<JoinPage />} />
-					</Routes>
-				</MainContainer>
-			</MainLayout>
+				<MainLayout>
+						<Routes>
+							<Route path="/auth/*" element={<AuthRoute />}/>
+							<Route path="/*" element={<MainRoute />}/>
+						</Routes>
+				</MainLayout>
     	</>
   	)
 }

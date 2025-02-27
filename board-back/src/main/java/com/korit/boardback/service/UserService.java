@@ -24,6 +24,9 @@ import java.util.List;
 public class UserService {
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private UserRoleRepository userRoleRepository;
 
     @Autowired
@@ -58,7 +61,7 @@ public class UserService {
                 .accountExpired(1)
                 .accountLocked(1)
                 .credentialsExpired(1)
-                .accountEnabled(1)
+                .accountEnabled(0)
                 .build();
 
         userRepository.save(user);
@@ -67,6 +70,12 @@ public class UserService {
                 .roleId(1)
                 .build();
         userRoleRepository.save(userRole);
+
+        try {
+            emailService.sendAuthMail(reqJoinDto.getEmail(), reqJoinDto.getUsername());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return user;
     }
     public String login(ReqLoginDto reqLoginDto) {
@@ -101,6 +110,14 @@ public class UserService {
     public void updateNickname(User user, String nickname) {
 
         userRepository.updateNickname(user.getUserId(), nickname);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePassword(User user, String password) {
+
+        String encodedPassword = passwordEncoder.encode(password);  // 암호화해서 전달
+
+        userRepository.updatePassword(user.getUserId(), encodedPassword);
     }
 
 }

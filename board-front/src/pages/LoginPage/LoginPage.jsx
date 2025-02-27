@@ -8,12 +8,13 @@ import { useLoginMutation } from '../../mutations/authMutation';
 import Swal from 'sweetalert2';
 import { setTokenLocalStorage } from '../../configs/axiosConfig';
 import { useUserMeQuery } from '../../queries/userquery';
+import { useQueryClient } from '@tanstack/react-query';
 
 function LoginPage(props) {
 
     const navigete = useNavigate();
+    const queryClient = useQueryClient();
     const loginMutation = useLoginMutation();
-    const loginUser = useUserMeQuery();
 
     const [ searchParams, setSearchParams ] = useSearchParams();
     const [ inputValue, setInputValue] = useState({
@@ -45,8 +46,9 @@ function LoginPage(props) {
                 position:"center",
                 showCancelButton: false,
             });
-            loginUser.refetch();
-            navigete("/");  // 로그인 성공 후 홈으로 이동
+            await queryClient.invalidateQueries({queryKey: ["userMeQuery"]});   // 캐쉬를 신선하지 않은 상태로 바꾼다
+
+            navigete("/");
 
         } catch (error) {
 
