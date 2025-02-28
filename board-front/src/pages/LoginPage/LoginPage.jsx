@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { SiGoogle, SiKakao, SiNaver } from "react-icons/si";
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import ValidInput from '../../components/auth/ValidInput/ValidInput';
-import { useLoginMutation } from '../../mutations/authMutation';
+import { useLoginMutation, useSendAuthMailMutation } from '../../mutations/authMutation';
 import Swal from 'sweetalert2';
 import { setTokenLocalStorage } from '../../configs/axiosConfig';
 import { useUserMeQuery } from '../../queries/userquery';
@@ -15,6 +15,7 @@ function LoginPage(props) {
     const navigete = useNavigate();
     const queryClient = useQueryClient();
     const loginMutation = useLoginMutation();
+    const sendAuthMailMutation = useSendAuthMailMutation();
 
     const [ searchParams, setSearchParams ] = useSearchParams();
     const [ inputValue, setInputValue] = useState({
@@ -52,17 +53,45 @@ function LoginPage(props) {
 
         } catch (error) {
 
+            if(error.response.status === 401) {
+
+                const result = await Swal.fire({
+
+                    title: '계정 활성화!',
+                    text: '계정을 활성화 하려면 등록하신 메일을 통해 계정 인증을 하세요. 다시 메일 재전송이 필요하면 전송버튼을 클릭하세요.',
+                    icon: 'error',
+                    confirmButtonText: '전송',
+                    confirmButtonAriaLabel: "#2389e2",
+                    showCancelButton: true,
+                    cancelButtonText: '취소',
+                    confirmButtonAriaLabel: "#999999",
+                });                
+                if(result.isConfirmed) {
+
+                    await sendAuthMailMutation.mutateAsync(inputValue.username);
+                    await Swal.fire({
+                        title: '메일 전송 완료',
+                        confirmButtonText: '확인',
+                        confirmButtonAriaLabel: "#2389e2",
+
+                    })
+                }
+
+            } else {
+
             //  sweetalert2 사용
             await Swal.fire({
+
                 title: '로그인 실패!',
                 text: '사용자 정보를 다시 확인해주세요',
                 icon: 'error',
                 confirmButtonText: '확인',
-              })
+                confirmButtonAriaLabel: "#e22323"
+              });
             
-        }
+            }
         
-    }
+        }
 
     return (
         <div css={s.layout}>
@@ -123,7 +152,7 @@ function LoginPage(props) {
                 </footer>
             </div>
         </div>
-    );
+        );
+    } 
 }
-
 export default LoginPage;
