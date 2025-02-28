@@ -3,29 +3,25 @@ import * as s from './style';
 import React, { useState } from 'react';
 import { SiGoogle, SiKakao, SiNaver } from "react-icons/si";
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import ValidInput from '../../components/auth/ValidInput/ValidInput';
 import { useLoginMutation, useSendAuthMailMutation } from '../../mutations/authMutation';
 import Swal from 'sweetalert2';
 import { setTokenLocalStorage } from '../../configs/axiosConfig';
-import { useUserMeQuery } from '../../queries/userquery';
 import { useQueryClient } from '@tanstack/react-query';
 
 function LoginPage(props) {
-
-    const navigete = useNavigate();
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const loginMutation = useLoginMutation();
     const sendAuthMailMutation = useSendAuthMailMutation();
 
     const [ searchParams, setSearchParams ] = useSearchParams();
-    const [ inputValue, setInputValue] = useState({
 
+    const [ inputValue, setInputValue ] = useState({
         username: searchParams.get("username") || "",
         password: ""
-    })
+    }); 
 
-    const handleInputOnchange = (e) => {
-
+    const handleInputOnChange = (e) => {
         setInputValue(prev => ({
             ...prev,
             [e.target.name]: e.target.value,
@@ -33,10 +29,8 @@ function LoginPage(props) {
     }
 
     const handleLoginOnClick = async () => {
-
         try {
-            
-            const response = await loginMutation.mutateAsync(inputValue)
+            const response = await loginMutation.mutateAsync(inputValue);
             const tokenName = response.data.name;
             const accessToken = response.data.token;
             setTokenLocalStorage(tokenName, accessToken);
@@ -45,53 +39,46 @@ function LoginPage(props) {
                 text: "로그인 성공",
                 timer: 1000,
                 position:"center",
-                showCancelButton: false,
+                showConfirmButton: false,
             });
-            await queryClient.invalidateQueries({queryKey: ["userMeQuery"]});   // 캐쉬를 신선하지 않은 상태로 바꾼다
-
-            navigete("/");
-
-        } catch (error) {
-
+            await queryClient.invalidateQueries({queryKey: ["userMeQuery"]});
+            navigate("/");
+        } catch(error) {
             if(error.response.status === 401) {
-
                 const result = await Swal.fire({
-
-                    title: '계정 활성화!',
-                    text: '계정을 활성화 하려면 등록하신 메일을 통해 계정 인증을 하세요. 다시 메일 재전송이 필요하면 전송버튼을 클릭하세요.',
-                    icon: 'error',
+                    title: '계정 활성화',
+                    text: '계정을 활성화 하려면 등록하신 메일을 통해 계정 인증을 하세요. 다시 메일 전송이 필요하면 전송버튼을 클릭하세요.',
                     confirmButtonText: '전송',
-                    confirmButtonAriaLabel: "#2389e2",
+                    confirmButtonColor: "#2389e2",
                     showCancelButton: true,
                     cancelButtonText: '취소',
-                    confirmButtonAriaLabel: "#999999",
-                });                
+                    cancelButtonColor: "#999999",
+                });
                 if(result.isConfirmed) {
-
                     await sendAuthMailMutation.mutateAsync(inputValue.username);
                     await Swal.fire({
                         title: '메일 전송 완료',
                         confirmButtonText: '확인',
-                        confirmButtonAriaLabel: "#2389e2",
-
-                    })
+                        confirmButtonColor: "#2389e2"
+                    });
                 }
 
             } else {
-
-            //  sweetalert2 사용
-            await Swal.fire({
-
-                title: '로그인 실패!',
-                text: '사용자 정보를 다시 확인해주세요',
-                icon: 'error',
-                confirmButtonText: '확인',
-                confirmButtonAriaLabel: "#e22323"
-              });
-            
+                await Swal.fire({
+                    title: '로그인 실패',
+                    text: '사용자 정보를 다시 확인해주세요.',
+                    confirmButtonText: '확인',
+                    confirmButtonColor: "#e22323"
+                });
             }
-        
         }
+    }
+
+    const handleOAuth2LoginOnClick = (provider) => {
+        window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
+    }
+
+
 
     return (
         <div css={s.layout}>
@@ -103,13 +90,13 @@ function LoginPage(props) {
                 <main>
                     <div css={s.oauth2Group}>
                         <div css={s.groupBox}>
-                            <button css={s.oauth2Button}>
+                            <button css={s.oauth2Button} onClick={() => handleOAuth2LoginOnClick("google")}>
                                 <div css={s.oauth2Icon}><SiGoogle /></div>
                                 <span css={s.oauth2Text}>Continue with Google</span>
                             </button>
                         </div>
                         <div css={s.groupBox}>
-                            <button css={s.oauth2Button}>
+                            <button css={s.oauth2Button} onClick={() => handleOAuth2LoginOnClick("naver")}>
                                 <div css={s.oauth2Icon}><SiNaver /></div>
                                 <span css={s.oauth2Text}>Continue with Naver</span>
                             </button>
@@ -123,17 +110,17 @@ function LoginPage(props) {
                     </div>
                     <div>
                         <div css={s.groupBox}>
-                            <input css={s.textInput} type="text" placeholder="Enter your username..." 
+                            <input css={s.textInput} type="text" placeholder='Enter your username...'
                                 name="username"
                                 value={inputValue.username}
-                                onChange={handleInputOnchange}
+                                onChange={handleInputOnChange}
                             />
                         </div>
                         <div css={s.groupBox}>
-                            <input css={s.textInput} type="password" placeholder='password...' 
+                            <input css={s.textInput} type="password" placeholder='password...'
                                 name="password"
                                 value={inputValue.password}
-                                onChange={handleInputOnchange}
+                                onChange={handleInputOnChange}
                             />
                         </div>
                         <p css={s.accountMessage}>
@@ -152,7 +139,7 @@ function LoginPage(props) {
                 </footer>
             </div>
         </div>
-        );
-    } 
+    );
 }
+
 export default LoginPage;

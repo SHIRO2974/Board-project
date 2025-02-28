@@ -1,11 +1,15 @@
 package com.korit.boardback.config;
 
 import com.korit.boardback.security.filter.JwtAuthenticationFilter;
+import com.korit.boardback.security.handler.CustomAuthenticationEntryPoint;
+import com.korit.boardback.security.oauth2.CustomOAuth2SuccessHandler;
+import com.korit.boardback.security.oauth2.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -19,6 +23,15 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
+
+    @Autowired
+    private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
+
+    @Autowired
+    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
 
@@ -29,8 +42,24 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(Customizer.withDefaults());
         http.csrf(csrf -> csrf.disable());
+        http.sessionManagement(sessionManagement ->
+        {sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS);});
+
+        http.httpBasic(httpBasic -> httpBasic.disable());
+        http.formLogin(formLogin -> formLogin.disable());
+        http.oauth2Login(oauth2 -> {
+
+            oauth2.userInfoEndpoint(userInfoEndpoint -> {
+                userInfoEndpoint.userService(customOAuth2UserService);
+                });
+            oauth2.successHandler(customOAuth2SuccessHandler);
+            });
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.exceptionHandling(exceptionHandling -> {
+            exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint);
+        });
 
         http.authorizeHttpRequests(authorizeRequests -> {
             authorizeRequests.requestMatchers("/api/auth/**", "/image/**").permitAll();  // 허용

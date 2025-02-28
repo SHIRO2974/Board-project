@@ -55,8 +55,8 @@ export const profileImgBox = css`
     align-items: center;
     margin-right: 1rem;
     border-radius: 0.5rem;
-    width: 3rem;
-    height: 3rem;
+    width: 3.5rem;
+    height: 3.5rem;
     background-color: #ffffff;
     overflow: hidden;
 
@@ -70,8 +70,18 @@ export const profileImgBox = css`
 export const authText = css`
     display: inline-flex;
     align-items: center;
+    width: 20rem;
 
     & > svg {
         margin-right: 0.5rem;
+    }
+
+    & > span {
+        width: 80%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: start;
+        font-size: 1.8rem;
     }
 `;

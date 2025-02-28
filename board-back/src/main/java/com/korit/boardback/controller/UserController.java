@@ -1,6 +1,7 @@
 package com.korit.boardback.controller;
 
 import com.korit.boardback.security.principal.PrincipalUser;
+import com.korit.boardback.service.FileService;
 import com.korit.boardback.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,21 +43,20 @@ public class UserController {
     @PutMapping("/user/profile/nickname")
     public ResponseEntity<?> changeNickname(
             @AuthenticationPrincipal PrincipalUser principalUser,
-            @RequestBody Map<String, String> requestBody) {
-
+            @RequestBody Map<String, String> requestBody
+    ) {
         String nickname = requestBody.get("nickname");
         userService.updateNickname(principalUser.getUser(), nickname);
         return ResponseEntity.ok().build();
-
     }
+
     @PutMapping("/user/profile/password")
     public ResponseEntity<?> changePassword(
             @AuthenticationPrincipal PrincipalUser principalUser,
-            @RequestBody Map<String, String> requestBody) {
-
+            @RequestBody Map<String, String> requestBody
+    ) {
         String password = requestBody.get("password");
         userService.updatePassword(principalUser.getUser(), password);
         return ResponseEntity.ok().build();
-
     }
 }
