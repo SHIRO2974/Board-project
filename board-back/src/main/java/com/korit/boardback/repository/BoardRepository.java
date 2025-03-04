@@ -18,6 +18,4 @@ public class BoardRepository {
         boardMapper.insertBoard(board);
         return board;
     }
-
-
 }

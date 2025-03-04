@@ -7,8 +7,7 @@ import Swal from 'sweetalert2';
 import { useSendVerifyEmailMutation, useUpdateEmailMutation } from '../../../mutations/accountMutation';
 import { useQueryClient } from '@tanstack/react-query';
 
-function EmailModal({ setOpen }) {
-
+function ChangeEmailModal({ setOpen }) {
     const queryClient = useQueryClient();
     const verifyEmailMutation = useSendVerifyEmailMutation();
     const updateEmailMutation = useUpdateEmailMutation();
@@ -16,8 +15,7 @@ function EmailModal({ setOpen }) {
     const [ emailValue, setEmailValue ] = useState("");
     const [ time, setTime ] = useState(60 * 5);
     const [ isSend, setSend ] = useState(false);
-    const [ verifyInputValue, setVerifyInputValue] = useState({
-
+    const [ verifyInputValue, setVerifyInputValue ] = useState({
         first: "",
         second: "",
         third: "",
@@ -25,7 +23,7 @@ function EmailModal({ setOpen }) {
         fifth: "",
         sixth: "",
     });
-    const [ verifycode, setverifycode ] = useState("");
+    const [ verifyCode, setVerifyCode ] = useState("");
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -49,23 +47,19 @@ function EmailModal({ setOpen }) {
     }, [time]);
 
     const handleEmailInputOnChange = (e) => {
-
         setEmailValue(e.target.value);
     }
 
     const handleSendMailOnClick = async () => {
-
         setTime(60 * 5);
         setSend(true);
         const response = await verifyEmailMutation.mutateAsync(emailValue);
-        setverifycode(response.data.toString().padStart(6, '0'));
+        setVerifyCode(response.data.toString().padStart(6, '0'));
     }
 
     const handleVerifyInputOnChange = (e) => {
-        setVerifyInputValue(prev => {
-
-            if (/^[0-9]?$/.test(e.target.value)) {
-
+        setVerifyInputValue(prev => { 
+            if(/^[0-9]?$/.test(e.target.value)) {
                 return {
                     ...prev,
                     [e.target.name]: e.target.value,
@@ -75,31 +69,28 @@ function EmailModal({ setOpen }) {
                 ...prev
             }
         })
-
     }
 
     const handleSetButtonOnClick = async () => {
+        const inputCode = 
+            verifyInputValue.first
+            + verifyInputValue.second
+            + verifyInputValue.third
+            + verifyInputValue.fourth
+            + verifyInputValue.fifth
+            + verifyInputValue.sixth;
 
-        const inputCode = verifyInputValue.fifth 
-        + verifyInputValue.second
-        + verifyInputValue.third
-        + verifyInputValue.fourth
-        + verifyInputValue.fifth
-        + verifyInputValue.sixth;
-
-        if (verifycode !== inputCode) {
-            
-            Swal.fire({
+        if(verifyCode.toString() !== inputCode) {
+            await Swal.fire({
                 titleText: "인증번호가 일치하지 않습니다.",
                 confirmButtonText: "확인",
                 confirmButtonColor: "#d02121",
             });
             return;
         }
-
-        await updateEmailMutation.mutateAsync(emailValue)''
+        await updateEmailMutation.mutateAsync(emailValue);
         await Swal.fire({
-            titleText: "이메일 변경완료",
+            titleText: "이메일 변경 완료",
             confirmButtonText: "확인",
         });
         await queryClient.invalidateQueries({queryKey: ["userMeQuery"]});
@@ -124,8 +115,8 @@ function EmailModal({ setOpen }) {
                 <div css={s.inputGroup}>
                     <label>Enter a new email</label>
                     <div css={s.emailInputAndSendButton}>
-                        <input type="email" name='newEmail'
-                            disabled={isSend} 
+                        <input type="email" name='newEmail' 
+                            disabled={isSend}
                             value={emailValue} 
                             onChange={handleEmailInputOnChange} />
                         {
@@ -138,26 +129,26 @@ function EmailModal({ setOpen }) {
                     </div>
                 </div>
                 {
-                    isSend &&
-                
-                <div css={s.inputGroup}>
-                    <div css={s.verifyInput} />
-                        <input type="number" name='first' value={verifyInputValue.first} onChange={handleVerifyInputOnChange}/>
-                        <input type="number" name='second' value={verifyInputValue.second} onChange={handleVerifyInputOnChange}/>
-                        <input type="number" name='third' value={verifyInputValue.third} onChange={handleVerifyInputOnChange}/>
-                        <input type="number" name='fourth' value={verifyInputValue.fourth} onChange={handleVerifyInputOnChange}/>
-                        <input type="number" name='fifth' value={verifyInputValue.fifth} onChange={handleVerifyInputOnChange}/>
-                        <input type="number" name='sixth' value={verifyInputValue.sixth} onChange={handleVerifyInputOnChange}/>
+                    isSend && 
+                    <div css={s.inputGroup}>
+                        <div css={s.verifyInput}>
+                            <input type="number" name='first' value={verifyInputValue.first} onChange={handleVerifyInputOnChange}/>
+                            <input type="number" name='second' value={verifyInputValue.second} onChange={handleVerifyInputOnChange}/>
+                            <input type="number" name='third' value={verifyInputValue.third} onChange={handleVerifyInputOnChange}/>
+                            <input type="number" name='fourth' value={verifyInputValue.fourth} onChange={handleVerifyInputOnChange}/>
+                            <input type="number" name='fifth' value={verifyInputValue.fifth} onChange={handleVerifyInputOnChange}/>
+                            <input type="number" name='sixth' value={verifyInputValue.sixth} onChange={handleVerifyInputOnChange}/>
+                        </div>
                     </div>
                 }
-                </div>
                 <button 
                     css={s.setButton} 
                     disabled={!emailValue || Object.values(verifyInputValue).includes("")}
                     onClick={handleSetButtonOnClick}
                 >Set a eamil address</button>
             </div>
+        </div>
     );
 }
 
-export default EmailModal;
+export default ChangeEmailModal;

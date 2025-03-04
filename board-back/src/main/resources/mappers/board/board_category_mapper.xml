@@ -9,18 +9,34 @@
         <result property="boardCategoryName" column="board_category_name" />
     </resultMap>
 
-
     <insert id="insertBoardCategory" keyProperty="boardCategoryId" useGeneratedKeys="true">
         insert into board_category_tb
         values(default, #{boardCategoryName})
     </insert>
+
     <select id="selectBoardCategoryByName" resultMap="boardCategoryResultMap">
         select
-            board_category_id
-            board_category_name
+        board_category_id,
+        board_category_name
         from
-            board_category_tb
+        board_category_tb
         where
-            board_category_name = #{boardCategoryName}
+        board_category_name = #{boardCategoryName}
+    </select>
+
+    <select id="selectBoardCategoryAndBoardCountByUserId"
+            resultType="com.korit.boardback.entity.BoardCategoryAndBoardCount">
+        select
+        bct.board_category_id as boardCategoryId,
+        bct.board_category_name as boardCategoryName,
+        (select count(*) from board_tb where board_category_id = bct.board_category_id) as boardCount
+        from
+        board_category_tb bct
+        inner join board_tb bt on(bt.board_category_id = bct.board_category_id)
+        where
+        bt.user_id = #{userId}
+        group by
+        bct.board_category_id,
+        bct.board_category_name
     </select>
 </mapper>

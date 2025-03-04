@@ -12,7 +12,6 @@ export const layout = (isOpen) => css`
 `;
 
 export const container = css`
-
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -25,6 +24,7 @@ export const container = css`
 `;
 
 export const groupLayout = css`
+    position: relative;
     box-sizing: border-box;
     border-radius: 0.7rem;
     padding: 0.6rem;
@@ -48,24 +48,21 @@ export const user = css`
 `;
 
 export const profileImgBox = css`
-
     box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-right: 1rem;
     border-radius: 0.5rem;
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 3rem;
+    height: 3rem;
     background-color: #ffffff;
     overflow: hidden;
 
     & > img {
-
         width: 100%;
-
     }
-`
+`;
 
 export const authText = css`
     display: inline-flex;
@@ -75,20 +72,43 @@ export const authText = css`
     & > svg {
         margin-right: 0.5rem;
     }
-
     & > span {
         width: 80%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         text-align: start;
-        font-size: 1.8rem;
     }
 `;
 
-export const writeButton = css`
+export const categoryText = css`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+`;
 
+export const writeButton = css`
     position: absolute;
     right: 0.6rem;
     top: 0.4rem;
-`
+`;
+
+export const categoryListContainer = css`
+    flex-grow: 1;
+    overflow-y: auto;
+`;
+
+export const categoryItem = css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    & > button:nth-of-type(2) {
+        opacity: 0;
+    }
+
+    &:hover > button:nth-of-type(2) {
+        opacity: 1;
+    }
+`;

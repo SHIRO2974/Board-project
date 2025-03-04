@@ -1,50 +1,58 @@
 import { css } from "@emotion/react";
 
 export const quillEditor = css`
-
     box-sizing: border-box;
     flex-grow: 1;
     height: 60rem;
 
-    .ql-toolbar{
-
+    .ql-toolbar {
+        box-sizing: border-box;
         display: flex;
         justify-content: flex-start;
         flex-wrap: wrap;
         border: none;
         border-bottom: 0.1rem solid #dbdbdb;
+        &.ql-snow {
+            box-sizing: border-box;
+            padding: 1rem 0;
+        }
     }
 
     .ql-container {
-
-        height: 90%;
-        overflow-y: auto;
-
-
+        box-sizing: border-box;
+        height: 85%;
+        border: none;
     }
+
 `;
 
-export const quillTop = css`
 
+export const quillTop = css`
     display: flex;
-    justify-content: flex-end;
 
     & > input {
-
         box-sizing: border-box;
         flex-grow: 1;
         margin-right: 1rem;
         outline: none;
-        border: ;
+        border: 0.1rem solid #dbdbdb;
+        border-radius: 0.5rem;
+        padding: 0 1.5rem;
     }
 `;
 
 export const saveButton = css`
-
     box-sizing: border-box;
+    margin-right: 1rem;
     border: 0.1rem solid #dbdbdb;
     border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
     background-color: #fafafa;
     cursor: pointer;
-
-`
+    &:hover {
+        background-color: #eeeeee;
+    }
+    &:active {
+        background-color: #dddddd;
+    }
+`;
