@@ -57,15 +57,29 @@ export const inputGroup = css`
         padding: 0.5rem 1rem;
         font-size: 1.4rem;
         color: #666666;
+        background-color: #fafafa;
     }
 `;
 
-export const emailInputAndSendButton = css`
+export const verifyInput = css`
 
     display: flex;
+    justify-content: center;
+    align-items: center;
 
     & > input {
+        margin: 0 0.5rem;
+        width: 2rem;
+        height: 2rem;
+        text-align: center;
+        
+    }
+`
 
+export const emailInputAndSendButton = css`
+    display: flex;
+    align-items: center;
+    & > input {
         box-sizing: border-box;
         outline: none;
         margin-right: 1rem;
@@ -75,32 +89,38 @@ export const emailInputAndSendButton = css`
         flex-grow: 1;
         font-size: 1.4rem;
         color: #666666;
+        background-color: #fafafa;
     }
 
-    & > button {
+    & > span {
 
-    box-sizing: border-box;
-    border: none;
-    border-radius: 0.5rem;
-    padding: 0.5rem 1.5rem;
-    background-color: #2383e2;
-    color: #ffffff;
-    cursor: pointer;
-
-    &:active {
-        background-color: #1b65af;
-    }
-
-    &:disabled {
-        background-color: #eeeeee;
+        margin-right: 1rem;
+        margin-bottom: 0.5rem;
+        font-size: 1.4rem;
         cursor: default;
     }
 
+    & > button {
+        box-sizing: border-box;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1.5rem;
+        background-color: #2383e2;
+        color: #ffffff;
+        cursor: pointer;
+
+        &:active {
+            background-color: #1b65af;
+        }
+
+        &:disabled {
+            background-color: #eeeeee;
+            cursor: default;
+        }
     }
 `;
 
 export const setButton = css`
-
     box-sizing: border-box;
     margin-top: 0.5rem;
     border: none;
@@ -119,4 +139,4 @@ export const setButton = css`
         background-color: #eeeeee;
         cursor: default;
     }
-`
+`;

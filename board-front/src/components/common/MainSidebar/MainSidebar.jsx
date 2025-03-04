@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { BiLogOut } from "react-icons/bi";
 import { setTokenLocalStorage } from '../../../configs/axiosConfig';
 import { useQueryClient } from '@tanstack/react-query';
+import { useGetCategories } from '../../../queries/boardQuery';
 
 
 function MainSidebar(props) {
@@ -19,6 +20,7 @@ function MainSidebar(props) {
     const [ isOpen, setOpen ] = useRecoilState(mainSidebarIsOpenState);
     const queryClient = useQueryClient();
     const loginUserData = queryClient.getQueryData(["userMeQuery"]);
+    const categories = useGetCategories();
 
 
     const handleSidebarClose = () => {

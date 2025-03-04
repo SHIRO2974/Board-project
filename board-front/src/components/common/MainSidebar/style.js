@@ -85,3 +85,10 @@ export const authText = css`
         font-size: 1.8rem;
     }
 `;
+
+export const writeButton = css`
+
+    position: absolute;
+    right: 0.6rem;
+    top: 0.4rem;
+`
