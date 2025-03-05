@@ -35,6 +35,15 @@ function MainSidebar(props) {
         navigate("/auth/login");
     }
 
+    const handleWriteOnclick = async (categoryName) => {
+        
+        if (categoryData.isConfirmed) {
+
+
+            
+        }
+    }
+
     const handleWriteOnClick = async () => {
         const categoryData = await Swal.fire({
             title: "카테고리명을 입력하세요",
@@ -46,7 +55,10 @@ function MainSidebar(props) {
         });
         if(categoryData.isConfirmed) {
             navigate(`/board/write/${categoryData.value}`);
+        } else {
+            return;
         }
+        navigate(`/board/write/${categoryName}`);
     }
 
     return (
@@ -85,7 +97,7 @@ function MainSidebar(props) {
                     <div css={s.groupLayout}>
                         <div css={s.categoryItem}>
                             <button css={emptyButton}>내가 작성한 글</button>
-                            <button css={basicButton} onClick={handleWriteOnClick}><BiEdit /></button>
+                            <button css={basicButton} onClick={handleWriteOnClick(null)}><BiEdit /></button>
                         </div>
                     </div>
                 </div>
@@ -96,7 +108,7 @@ function MainSidebar(props) {
                             <div css={s.groupLayout}>
                                 <div css={s.categoryItem}>
                                     <button css={emptyButton}>{category.boardCategoryName}({category.boardCount})</button>
-                                    <button css={basicButton}><BiEdit /></button>
+                                    <button css={basicButton} onClick={() => handleWriteOnClick(category.boardCategoryName)}><BiEdit /></button>
                                 </div>
                             </div>
                         )

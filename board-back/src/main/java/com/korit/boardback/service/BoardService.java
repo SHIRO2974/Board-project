@@ -1,31 +1,29 @@
 package com.korit.boardback.service;
 
 import com.korit.boardback.dto.ReqWriteBoardDto;
-import com.korit.boardback.entity.Board;
-import com.korit.boardback.entity.BoardCategory;
-import com.korit.boardback.entity.User;
-import com.korit.boardback.mapper.BoardCategoryMapper;
+import com.korit.boardback.dto.request.ReqBoardListSearchDto;
+import com.korit.boardback.entity.*;
 import com.korit.boardback.repository.BoardCategoryRepository;
 import com.korit.boardback.repository.BoardRepository;
-import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class BoardService {
 
     @Autowired
     private BoardCategoryRepository boardCategoryRepository;
-
     @Autowired
     private BoardRepository boardRepository;
 
     @Transactional(rollbackFor = Exception.class)
     public Board createBoard(String categoryName, User user, ReqWriteBoardDto reqWriteBoardDto) {
-
-        BoardCategory boardCategory = boardCategoryRepository.
-                findByName(categoryName).orElseGet(() -> {
+        BoardCategory boardCategory = boardCategoryRepository
+                .findByName(categoryName)
+                .orElseGet(() -> {
                     BoardCategory bc = BoardCategory.builder()
                             .boardCategoryName(categoryName)
                             .build();
@@ -40,4 +38,23 @@ public class BoardService {
                 .build();
         return boardRepository.save(board);
     }
+
+    public List<BoardCategoryAndBoardCount> getBoardCategoriesByUserId(User user) {
+        return boardCategoryRepository.findAllByUserId(user.getUserId());
+    }
+
+    @Transactional(readOnly = true) // 읽기전용 최적화
+    public List<BoardSearch> getBoardListSearchBySearchOption(ReqBoardListSearchDto dto) {
+
+        int startIndex = (dto.getPage() - 1 ) * dto.getLimitCount();
+        return boardRepository.findBoardListAllBySearchOption(
+                startIndex, dto.getLimitCount(),dto.getOrder(),dto.getSearchText());
+    }
+
+    @Transactional(readOnly = true)
+    public int getBoardCountBySearchText(String searchText) {
+
+        return boardRepository.findBoardCountBySearchText(searchText);
+    }
+
 }
